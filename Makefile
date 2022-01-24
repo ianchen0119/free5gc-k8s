@@ -1,6 +1,5 @@
 # Makefile
 F5GC_BASE_NAME           ?= f5gc-build-base
-F5GC_GNBSIM_NAME         ?= f5gc-gnbsim
 F5GC_AMF_NAME            ?= f5gc-amf
 F5GC_SMF_NAME            ?= f5gc-smf
 F5GC_UPF_NAME            ?= f5gc-upf
@@ -13,13 +12,12 @@ F5GC_UDR_NAME            ?= f5gc-udr
 F5GC_WEBUI_NAME		 ?= f5gc-webui
 
 DOCKER_ENV              ?= DOCKER_BUILDKIT=1
-DOCKER_TAG              ?= v3.0.4
+DOCKER_TAG              ?= v3.0.6
 DOCKER_REGISTRY         ?= ghcr.io
-DOCKER_REPOSITORY       ?= sumichaaan/free5gc-k8s
+DOCKER_REPOSITORY       ?= ianchen0119/free5gc-k8s
 DOCKER_BUILD_ARGS       ?= --rm
 
 BASE_IMAGE_NAME         ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_BASE_NAME}:${DOCKER_TAG}
-GNBSIM_IMAGE_NAME       ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_GNBSIM_NAME}:${DOCKER_TAG}
 AMF_IMAGE_NAME          ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_AMF_NAME}:${DOCKER_TAG}
 SMF_IMAGE_NAME          ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_SMF_NAME}:${DOCKER_TAG}
 UPF_IMAGE_NAME          ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_UPF_NAME}:${DOCKER_TAG}
@@ -33,7 +31,7 @@ WEBUI_IMAGE_NAME          ?= ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_WEBU
 
 
 
-build-all: build-base build-gnbsim build-amf build-smf build-upf build-nrf build-ausf build-nssf build-pcf build-udm build-udr build-webui
+build-all: build-base build-amf build-smf build-upf build-nrf build-ausf build-nssf build-pcf build-udm build-udr build-webui
 
 
 .PHONY: build-base
@@ -42,17 +40,6 @@ build-base:
 		--tag ${BASE_IMAGE_NAME} \
 		--file ./images/${F5GC_BASE_NAME}/Dockerfile.alpine \
 		./images/${F5GC_BASE_NAME}
-
-.PHONY: build-gnbsim
-build-gnbsim:
-	${DOCKER_ENV} docker build ${DOCKER_BUILD_ARGS} \
-		--tag ${GNBSIM_IMAGE_NAME} \
-		--file ./images/${F5GC_GNBSIM_NAME}/Dockerfile.ubuntu18 \
-		--build-arg REGISTRY=${DOCKER_REGISTRY} \
-		--build-arg REPOSITORY=${DOCKER_REPOSITORY} \
-		--build-arg TAG=${DOCKER_TAG} \
-		--no-cache \
-		./images/${F5GC_GNBSIM_NAME}
 
 .PHONY: build-amf
 build-amf: build-base
@@ -196,7 +183,6 @@ build-webui: build-base
 
 clean:
 	docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_BASE_NAME}:${DOCKER_TAG}
-	docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_GNBSIM_NAME}:${DOCKER_TAG}
 	docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_AMF_NAME}:${DOCKER_TAG}
 	docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_SMF_NAME}:${DOCKER_TAG}
 	docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${F5GC_UPF_NAME}:${DOCKER_TAG}
