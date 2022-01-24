@@ -37,7 +37,7 @@ build-all: build-base build-amf build-smf build-upf build-nrf build-ausf build-n
 .PHONY: build-base
 build-base:
 	${DOCKER_ENV} docker build ${DOCKER_BUILD_ARGS} \
-		--tag ${BASE_IMAGE_NAME} \
+		--no-cache --tag ${BASE_IMAGE_NAME} \
 		--file ./images/${F5GC_BASE_NAME}/Dockerfile.alpine \
 		./images/${F5GC_BASE_NAME}
 

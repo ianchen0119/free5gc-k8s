@@ -5,7 +5,7 @@ LABEL description="Free5GC open source 5G Core Network" \
     version="Stage 3"
 LABEL org.opencontainers.image.source https://github.com/ianchen0119/free5gc-k8s
 
-ENV F5GC_MODULE webui
+ENV F5GC_MODULE webconsole
 ARG DEBUG_TOOLS
 
 # Install debug tools ~ 100MB (if DEBUG_TOOLS is set to true)
@@ -13,11 +13,10 @@ RUN if [ "$DEBUG_TOOLS" = "true" ] ; then apk add -U vim strace net-tools curl n
 
 # Set working dir
 WORKDIR /free5gc
-RUN mkdir -p config/ webconsole/public
+RUN mkdir -p config/ webconsole
 
 # Copy executable, frontend static files and default configuration
-COPY --from=builder /free5gc/${F5GC_MODULE} ./webconsole
-COPY --from=builder /free5gc/public ./webconsole/public
+COPY --from=builder /free5gc/public ./webconsole
 
 # Move to the executable location
 WORKDIR /free5gc/webconsole
@@ -25,7 +24,7 @@ WORKDIR /free5gc/webconsole
 # Config files volume
 VOLUME [ "/free5gc/config" ]
 
-ENTRYPOINT [ "./webui" ]
+ENTRYPOINT [ "./webconsole" ]
 
-# WebUI uses the port 5000
+# webconsole uses the port 5000
 EXPOSE 5000
